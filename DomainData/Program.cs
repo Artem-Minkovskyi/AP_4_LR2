@@ -1,10 +1,11 @@
 ﻿using AP_4_LR2;
 using AP_4_LR2.Models;
 using AP_4_LR2.Repositories;
+using System.Text;
 
 var context = new LibraryContext();
-context.Database.EnsureCreated(); 
-
+context.Database.EnsureCreated();
+Console.OutputEncoding = UTF8Encoding.UTF8;
 var contentRepo = new GenericRepository<ContentItem>(context);
 var locationRepo = new GenericRepository<StorageLocation>(context);
 
