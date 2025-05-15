@@ -15,6 +15,8 @@ namespace AP_4_LR2.Models
         public string Address { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty;
 
+
+
         public ICollection<ContentItem> Contents { get; set; } = new List<ContentItem>();
     }
 }
