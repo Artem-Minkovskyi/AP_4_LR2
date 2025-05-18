@@ -1,13 +1,14 @@
 ﻿using AP_4_LR2;
 using AP_4_LR2.Models;
-using AP_4_LR2.Repositories;
+using AP_4_LR2.UoW;
 using System.Text;
 
+// Ініціалізація контексту та UnitOfWork
 var context = new LibraryContext();
 context.Database.EnsureCreated();
-Console.OutputEncoding = UTF8Encoding.UTF8;
-var contentRepo = new GenericRepository<ContentItem>(context);
-var locationRepo = new GenericRepository<StorageLocation>(context);
+Console.OutputEncoding = Encoding.UTF8;
+
+var unitOfWork = new UnitOfWork(context); // Єдиний доступ до репозиторіїв
 
 while (true)
 {
@@ -25,7 +26,7 @@ while (true)
 
     switch (input)
     {
-        case "1":
+        case "1": 
             Console.Write("Назва сховища: ");
             var name = Console.ReadLine();
             Console.Write("Адреса: ");
@@ -33,17 +34,17 @@ while (true)
             Console.Write("Тип: ");
             var type = Console.ReadLine();
 
-            locationRepo.Create(new StorageLocation
+            unitOfWork.StorageLocationRepo.Create(new StorageLocation
             {
                 Name = name ?? "",
                 Address = address ?? "",
                 Type = type ?? ""
             });
-            locationRepo.Save();
+            unitOfWork.Save();
             Console.WriteLine("Сховище додано.");
             break;
 
-        case "2":
+        case "2": 
             Console.WriteLine("Оберіть тип: 1-Книга, 2-Документ, 3-Відео, 4-Аудіо");
             var typeChoice = Console.ReadLine();
             Console.Write("Назва: ");
@@ -52,7 +53,7 @@ while (true)
             var format = Console.ReadLine();
 
             Console.WriteLine("ID наявних сховищ:");
-            foreach (var s in locationRepo.GetAll())
+            foreach (var s in unitOfWork.StorageLocationRepo.GetAll())
                 Console.WriteLine($"{s.Id}: {s.Name} - {s.Type}");
 
             Console.Write("Введіть ID сховища: ");
@@ -97,39 +98,40 @@ while (true)
 
             if (item != null)
             {
-                contentRepo.Create(item);
-                contentRepo.Save();
+                unitOfWork.ContentItemRepo.Create(item);
+                unitOfWork.Save();
                 Console.WriteLine("Контент додано.");
             }
             break;
 
-        case "3":
-            foreach (var c in contentRepo.GetAll())
+        case "3": 
+            foreach (var c in unitOfWork.ContentItemRepo.GetAll())
             {
                 Console.WriteLine($"ID: {c.Id}, Назва: {c.Title}, Тип: {c.GetType().Name}, Сховище ID: {c.StorageLocationId}");
             }
             break;
 
-        case "4":
+        case "4": 
             Console.Write("Введіть назву для пошуку: ");
             var keyword = Console.ReadLine()?.ToLower();
 
-            var results = contentRepo.GetAll().Where(c => c.Title.ToLower().Contains(keyword ?? ""));
+            var results = unitOfWork.ContentItemRepo.GetAll()
+                .Where(c => c.Title.ToLower().Contains(keyword ?? ""));
             foreach (var r in results)
                 Console.WriteLine($"ID: {r.Id}, Назва: {r.Title}, Тип: {r.GetType().Name}");
             break;
 
-        case "5":
+        case "5": 
             Console.Write("Введіть ID контенту: ");
             if (int.TryParse(Console.ReadLine(), out int delId))
             {
-                contentRepo.Delete(delId);
-                contentRepo.Save();
+                unitOfWork.ContentItemRepo.Delete(delId);
+                unitOfWork.Save();
                 Console.WriteLine("Контент видалено.");
             }
             break;
 
-        case "0":
+        case "0": 
             return;
 
         default:
