@@ -3,12 +3,12 @@ using AP_4_LR2.Models;
 using AP_4_LR2.UoW;
 using System.Text;
 
-// Ініціалізація контексту та UnitOfWork
+
 var context = new LibraryContext();
 context.Database.EnsureCreated();
 Console.OutputEncoding = Encoding.UTF8;
 
-var unitOfWork = new UnitOfWork(context); // Єдиний доступ до репозиторіїв
+var unitOfWork = new UnitOfWork(context); 
 
 while (true)
 {
