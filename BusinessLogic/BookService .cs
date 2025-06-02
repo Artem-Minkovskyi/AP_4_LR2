@@ -25,6 +25,22 @@ namespace BusinessLogic
             return book.Id;
         }
 
+        public Book Get(int id)
+        {
+            return _unitOfWork.BookRepo.GetById(id);
+        }
+
+        public IEnumerable<Book> GetAll()
+        {
+            return _unitOfWork.BookRepo.GetAll();
+        }
+
+        public void Update(Book book)
+        {
+            _unitOfWork.BookRepo.Update(book);
+            _unitOfWork.Save();
+        }
+
         public void Delete(int id)
         {
             _unitOfWork.BookRepo.Delete(id);

@@ -10,6 +10,9 @@ namespace BusinessLogic
     public interface IBookService
     {
         int Create(Book book);
+        Book Get(int id);
+        IEnumerable<Book> GetAll();
+        void Update(Book book);
         void Delete(int id);
     }
 }
